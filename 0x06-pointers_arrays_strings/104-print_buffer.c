@@ -6,16 +6,13 @@
  *
  * Return: Always 0.
  */
-void print_buffer(CSV_BUFFER *buffer)
+int main(void)
 {
-int i, j;
-printf("\n");
-for (i = 0; i < buffer->rows; i++)
-{
-for (j = 0; j < buffer->width[i]; j++)
-printf("%c%s%c%c", buffer->text_delim, buffer->field[i][j]->text, buffer->text_delim, buffer->field_delim);
-}
-printf("\n");
-}
-printf("\n\n");
+char buffer[] = "This is a string!\0And this is the rest of the #buffer :)
+\1\2\3\4\5\6\7#cisfun\n\0\0\0\0\0\0\0\0\0\0\0\0\0
+\0\0\0\0\0\0\x20\x21\x34\x56#pointersarefun #infernumisfun\n";
+printf("%s\n", buffer);
+printf("---------------------------------\n");
+print_buffer(buffer, sizeof(buffer));
+return (0);
 }
