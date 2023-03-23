@@ -1,120 +1,90 @@
+#include <stdio.h>
+#include <stdarg.h>
 #include "variadic_functions.h"
-
 /**
- * print_char - print a char
- *
- * @arg: a list of argument pointing
- *      to the character to be printed
- *
- * Return: nothing
+* print_c - print char
+*
+* @s: va_list
 */
-
-void print_char(va_list arg)
+void print_c(va_list s)
 {
-	char c = va_arg(arg, int);
-
-	printf("%c", c);
+	printf("%c", va_arg(s, int));
 }
-
 /**
- * print_int - print an integer
- *
- * @arg: a list of argument pointing
- *      to the character to be printed
- *
- * Return: nothing
+* print_i - print integer
+*
+* @s: va_list
 */
-
-void print_int(va_list arg)
+void print_i(va_list s)
 {
-	int n = va_arg(arg, int);
-
-	printf("%d", n);
+	printf("%i", va_arg(s, int));
 }
-
 /**
- * print_float - print a float
- *
- * @arg: a list of argument pointing
- *      to the character to be printed
- *
- * Return: nothing
+* print_f - print float
+*
+* @s: va_list
 */
-
-void print_float(va_list arg)
+void print_f(va_list s)
 {
-	float n = va_arg(arg, double);
-
-	printf("%f", n);
+	printf("%f", va_arg(s, double));
 }
-
 /**
- * print_string - print a string
- *
- * @arg: a list of argument pointing
- *      to the character to be printed
- *
- * Return: nothing
+* print_s - print string
+*
+* @s: va_list
 */
-
-void print_string(va_list arg)
+void print_s(va_list s)
 {
-	char *str = va_arg(arg, char *);
+	va_list clone;
 
-	if (str == NULL)
+	va_copy(clone, s);
+	if (va_arg(clone, char*) == '\0')
 	{
-		printf("(nil)");
-		return;
+	printf("%p", va_arg(s, char*));
 	}
-	printf("%s", str);
+	else
+	{
+	printf("%s", va_arg(s, char*));
+	}
 }
-
 /**
- * print_all - a function that prints anything
- *
- * @format: A string of character representing
- *          the argument types
- *
- * Description: If any argument not of type char,
- *              int, float or char * is ignored
- *
- * Return: nothing
+* print_all - print char, integer, float and string
+*
+* @format: format
 */
-
 void print_all(const char * const format, ...)
 {
-	va_list ap;
-	int i = 0, j = 0;
-	char *separator = "";
-	func_printer funcs[] = {
-		{"c", print_char},
-		{"i", print_int},
-		{"f", print_float},
-		{"s", print_string}
+
+	va_list list1;
+	unsigned int i = 0, j = 0;
+	my_fmt fmts[] = {
+		{"c", print_c},
+		{"i", print_i},
+		{"f", print_f},
+		{"s", print_s},
+		{'\0', '\0'}
 	};
 
-	va_start(ap, format);
-
-	while (format && format[i])
+	va_start(list1, format);
+	while (format[j] != '\0')
 	{
-		j = 0;
-		/**
-		 * 4 equals to the number of funcs present
-		 * so if j is less than four and our current
-		 * format is not equal to format in funcs
-		 * then j becomes j + 1
-		 */
-		while (j < 4 && (format[i] != *(funcs[j].symbol)))
-			j++;
-		if (j < 4)
+		i = 0;
+		while (fmts[i].f != '\0')
 		{
-			printf("%s", separator);
-			funcs[j].print_func(ap);
-			separator = ", ";
+			if (*(fmts[i].f) == format[j])
+			{
+				fmts[i].p(list1);
+				if (format[j + 1] == '\0')
+				{
+					printf("\n");
+				}
+				else
+				{
+					printf(", ");
+				}
+			}
+			i++;
 		}
-		i++;
+		j++;
 	}
-	printf("\n");
-
-	va_end(ap);
 }
